@@ -1,0 +1,158 @@
+#include <algorithm>  
+#include <iostream>  
+#include <math.h>  
+#include <stack>  
+#include <string>  
+using namespace std;  
+  
+template <typename T>  
+struct Node { // Create a node of BST  
+  
+    T data; // Node value  
+  
+    Node* left; // Pointer to the left child  
+  
+    Node* right; // Pointer to the right child  
+  
+public:  
+    // this function prints inorder traversal of BST  
+    void inorder(Node* r)  
+    {  
+        if (r == NULL) { // If we  reach last level  
+            return;  
+        }  
+        inorder(r->left); // print left child  
+        cout << r->data << " "; // print the node value  
+        inorder(r->right); // print the right child  
+    }  
+  
+    /* 
+        Function to check if BST contains a node 
+        with the given data 
+         
+        r pointer to the root node 
+         d the data to search in the BST 
+        The function returns 1 if the node is present in the BST else 0 
+    */  
+    int containsNode(Node* r, T d)  
+    {  
+        if (r == NULL) { // If we reach last level or tree is empty  
+            return 0;  
+        }  
+        int x = r->data == d ? 1 : 0; // Check for duplicacy  
+        // Traverse in right and left subtree  
+        return x | containsNode(r->left, d) | containsNode(r->right, d);  
+    }  
+  
+    /* 
+        Function to insert a node with 
+        given data into the BST 
+         
+        r pointer to the root node in the BST  
+        d the data to insert in the BST 
+        return pointer to the root of the resultant BST 
+    */  
+    Node* insert(Node* r, T d)  
+    {  
+  
+        if (r == NULL) { // Add where NULL is encountered which means space is present  
+            Node<T>* tmp = new Node<T>; // Create a new node in BST  
+            tmp->data = d; // insert the data in the BST  
+            tmp->left = tmp->right = NULL; // Allocate left and right pointers a NULL  
+            return tmp; // return current node  
+        }  
+  
+        //    Insert the node in the left subtree if data is less than current node data  
+        if (d < r->data) {  
+            r->left = insert(r->left, d);  
+            return r;  
+        }  
+  
+        //   Insert the node in the right subtree if data is greater than current node data  
+        else if (d > r->data) {  
+            r->right = insert(r->right, d);  
+            return r;  
+        }  
+        else  
+            return r;  
+    }  
+};  
+  
+template <typename T> // create a class template for implementing a set in BST  
+class Set { // Create class set  
+  
+    Node<T>* root; // Root to store the data  
+  
+    int size; // It indicates the size of the set  
+  
+public:  
+    Set() // If no value passed  
+    {  
+        root = NULL; // It points to NULL  
+        size = 0; // size becomes zero  
+    }  
+  
+    Set(const Set& s) // Copy constructor  
+    {  
+        root = s.root;  
+        size = s.size;  
+    }  
+  
+    void add(const T data) // It add an element to the set  
+    {  
+        if (!root->containsNode(root, data)) { // Check if it is the first element  
+            root = root->insert(root, data); // Insert  the data into the set  
+            size++; // Increment the size of the set  
+        }  
+    }  
+  
+    bool contains(T data)  
+    {  
+        return root->containsNode(root, data) ? true : false;  
+    }  
+  
+    void displaySet()  
+    {  
+        cout << "{ ";  
+        root->inorder(root);  
+        cout << "}" << endl;  
+    }  
+  
+    /* 
+        Function to return the current size of the Set 
+          
+        @return size of set 
+    */  
+    int getSize()  
+    {  
+        return size;  
+    }  
+};  
+  
+int main()  
+{  
+  
+    // Create Set A  
+    Set<int> A;  
+  
+    // Add elements to Set A  
+    A.add(1);  
+    A.add(2);  
+    A.add(3);  
+    A.add(2);  
+  
+    // Display the contents of Set A  
+    cout << "A = ";  
+    A.displaySet();  
+  
+    // Check if Set A contains some elements  
+    cout << "A " << (A.contains(3) ? "contains"  
+                                   : "does not contain")  
+         << " 3" << endl;  
+    cout << "A " << (A.contains(4) ? "contains"  
+                                   : "does not contain")  
+         << " 4" << endl;  
+    cout << endl;  
+  
+    return 0;  
+}  
